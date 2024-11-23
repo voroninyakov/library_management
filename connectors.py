@@ -5,6 +5,8 @@ def new_book():
     print("В любом поле введите x для отмены")
     exited = False
     for field in Book.fields():
+        if field == 'status':
+            continue
         if Book.validate_field(field, value := input(field + ": ")):
             model_dict[field] = value
         else:
@@ -27,8 +29,7 @@ def new_book():
 
 def help_command():
     print("""Список комманд:
-        'new' - заведение новой книги, потребуется ввод заголовка(title), автора(author), года(year) и \
-статуса(status)
+        'new' - заведение новой книги, потребуется ввод заголовка(title), автора(author) и года(year)
 
         'del <id>' - где вместо <id> число, удаление книги, Пример: 'del 2' - удалит вторую книгу
 
@@ -48,13 +49,13 @@ def confirmation():
         print("Операция отменена")
     return confirm
 
-def delete_book(book_id):
+def delete_book(book_id: str):
     if Book.delete(book_id):
         print(f'Успешно удалён(а) Book с айди {book_id}')
     else:
         print(f'Не удалось удалить Book с айди {book_id}')
 
-def search_book(field, value):
+def search_book(field: str, value):
     if search_models := Book.get_by_field(field, value):
         for model in search_models:
             print(Book.get_by_id(model))
@@ -62,9 +63,11 @@ def search_book(field, value):
         print("Нечего не найдено")
 
 def all_books():
-    books_data = Book.all()
-    for model_id in books_data:
-        print(Book(**books_data[model_id], model_id=model_id))
+    if books_data := Book.all():
+        for model_id in books_data:
+            print(Book(**books_data[model_id], model_id=model_id))
+    else:
+        print("Книг нету")
 
 def update_status(model_id, status):
     if Book.get_by_id(model_id):

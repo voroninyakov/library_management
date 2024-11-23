@@ -27,21 +27,19 @@ class JsonDatabase:
             json.dump(data, f)
 
     def insert(self, model):
-        data = self.read()
         try:
-            model.model_id = int(list(data[model.__class__.__name__].keys())[-1]) + 1
-            data[model.__class__.__name__][model.model_id] = model.data[model.model_id]
+            model.model_id = str(int(list(self.data[model.__class__.__name__].keys())[-1]) + 1)
+            self.data[model.__class__.__name__][model.model_id] = model.data[model.model_id]
         except Exception:
-            model.model_id = 0
-            data[model.__class__.__name__] = model.data
+            model.model_id = "0"
+            self.data[model.__class__.__name__] = model.data
         finally:
-            self.write(data)
+            self.write(self.data)
             return model.model_id
 
     def update_field(self, model, field, value):
-        data = self.read()
-        data[model.__class__.__name__][model.model_id][field] = value
-        self.write(data)
+        self.data[model.__class__.__name__][model.model_id][field] = value
+        self.write(self.data)
 
     def get_by_id(self, model_class, model_id):
         data = self.read()
@@ -51,26 +49,26 @@ class JsonDatabase:
             return None
 
     def get_by_field(self, model_class: type, model_field: str, value: str):
-        data = self.read()
         models = []
         try:
-            for model in data[model_class.__name__]:
-                if data[model_class.__name__][model][model_field] == value:
-                    models.append(model_class(data[model_class.__name__][model], model_id=model))
+            for model in self.data[model_class.__name__]:
+                if self.data[model_class.__name__][model][model_field] == value:
+                    models.append(model)
         finally:
             return models
 
-    def delete_by_id(self, model_class: type, model_id: int):
-        data = self.read()
+    def delete_by_id(self, model_class: type, model_id: str):
         try:
-            del data[model_class.__name__][str(model_id)]
-            self.write(data)
-        except KeyError:
+            del self.data[model_class.__name__][model_id]
+            self.write(self.data)
+            return True
+        except Exception:
             return False
-        return True
 
     def list_by_class(self, model_class):
-        data = self.read()
-        return data[model_class.__name__]
+        try:
+            return self.data[model_class.__name__]
+        except Exception:
+            return False
 
 db = JsonDatabase()
