@@ -5,10 +5,10 @@
 
 `new` - заведение новой книги, потребуется ввод заголовка(title), автора(author), года(year) и статуса(status)
 
-`del <id>` - где вместо <id> число, удаление книги, 
+`del <id>` - где вместо `<id>` число, удаление книги, 
 Пример: `del 2` - удалит вторую книгу
 
-`search <field> <value>` - поиск по полю <field> со значением <value>.Поиск доступен по полям title, author, year. 
+`search <field> <value>` - поиск по полю `<field>` со значением `<value>`.Поиск доступен по полям title, author, year. 
 Пример: `search title django`
     
 `all` - выводит все книги
@@ -37,7 +37,7 @@ python main.py
   Файл с настройками программы
 
 - [db.py](https://github.com/voroninyakov/library_management/blob/master/db.py)
-  Файл обстрагирующий непосредственное изменение данных в хранилище и в программе
+  Файл абстрагирующий непосредственное изменение данных в хранилище и в программе
 
 - [models.py](https://github.com/voroninyakov/library_management/blob/master/models.py)
   Файл представляющий модель данных в хранилище, с моделью для книги
